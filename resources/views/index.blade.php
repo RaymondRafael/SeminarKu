@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniEvents - Kelola Acara Kampus</title>
+    <title>SeminarKu - Kelola Acara Kampus</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@500;600;700&display=swap">
@@ -19,7 +19,7 @@
                 <div class="header-content">
                     <a href="index.html" class="logo">
                         <i class="fa-solid fa-calendar-check"></i>
-                        <span>UniEvents</span>
+                        <span>SeminarKu</span>
                     </a>
                     <div class="auth-actions">
                         <a href="{{ route('login.index') }}" class="btn btn-outline">Log In</a>
@@ -37,7 +37,7 @@
             <div class="container">
                 <div class="hero-content">
                     <div class="hero-text">
-                        <h1>Temukan Acara Seru di UniEvents</h1>
+                        <h1>Temukan Acara Seru di Seminarku</h1>
                         <p>Yuk cari, daftar, dan ikutan berbagai acara seru yang ada di kampus kamu!</p>
                         <div class="hero-actions">
                             <a href="#acara" class="btn btn-primary">Lihat Acara</a>
