@@ -14,13 +14,13 @@
                 <div class="footer-logo">
                     <i class="fa-solid fa-calendar-check"></i>
                     <h3>SeminarKu</h3>
-                    <p>The ultimate platform for Seminar Management</p>
+                    <p>The ultimate platform for university seminar management</p>
                 </div>
                 <div class="footer-links">
                     <div class="link-group">
                         <h4>Quick Links</h4>
                         <ul>
-                            <li><a href="events.html">Events</a></li>
+                            <li><a href="events.html">Seminars</a></li>
                             <li><a href="about.html">About</a></li>
                             <li><a href="contact.html">Contact</a></li>
                             <li><a href="register.html">Register</a></li>

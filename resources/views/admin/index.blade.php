@@ -29,6 +29,26 @@
                 </div>
             </header>
 
+                        @if (session('success'))
+                <div id="success-alert"
+                    class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4 flex justify-between items-center gap-4"
+                    role="alert" style="width: 100%;">
+
+                    <div class="flex items-start gap-2">
+                        <i class="fas fa-check-circle text-green-600 mt-1 text-lg"></i>
+                        <div>
+                            <strong class="font-semibold">Success!</strong>
+                            <span class="block">{{ session('success') }}</span>
+                        </div>
+                    </div>
+
+                    <button onclick="document.getElementById('success-alert').remove()"
+                        class="text-green-700 hover:text-green-900 focus:outline-none self-center">
+                        <i class="fas fa-times text-xl" style="margin-right: 20px"></i> <!-- ✅ ukuran ikon diperbesar -->
+                    </button>
+                </div>
+            @endif
+
             <!-- Dashboard Content -->
             <div class="dashboard-content">
                 <div class="dashboard-welcome">
@@ -56,7 +76,7 @@
                         </div>
                         <div class="stat-info">
                             <h3>48</h3>
-                            <p>Active Events</p>
+                            <p>Active Seminars</p>
                         </div>
                         <div class="stat-change">
                             <i class="fas fa-arrow-up"></i>
@@ -252,13 +272,13 @@
                             </div>
                             <div class="summary-card">
                                 <div class="summary-header">
-                                    <h4>Events Overview</h4>
+                                    <h4>Seminars Overview</h4>
                                 </div>
                                 <div class="summary-content">
                                     <div class="stats-grid">
                                         <div class="stat-box">
                                             <h5>48</h5>
-                                            <p>Active Events</p>
+                                            <p>Active Seminars</p>
                                         </div>
                                         <div class="stat-box">
                                             <h5>12</h5>

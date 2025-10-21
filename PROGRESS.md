@@ -15,3 +15,8 @@
 # 2372025 - Raymond Rafael Anthony: Menyempurnakan database dan membantu membuat Admin Controller, IndexConntroller.
 # 2372040 - Kaisar Naufal Naratama: Menyempurnakan database dan membantu membuat Keungan Controller, Panitia Controller.
 # 2372051 - Muhammad Syehan Alwafa: Membuat login Controller, register Controller, Peserta Controller, membuat model user,  membuat model role, dan membuat middleware untuk mengautentikasi tiap role. 
+
+# 17 Oktober 2025 - 24 Oktober 2025
+# 2372025 - Raymond Rafael Anthony: Membuat fitur tambah user di bagian admin, buat seminar dan sesi di bagian panitia, registrasi seminar di bagian peserta, generate qr code, acc/tolak pembayaran di bagian keuangan.
+# 2372040 - Kaisar Naufal Naratama: Menyempurnakan database dan membantu membuat fitur generate qr code.
+# 2372051 - Muhammad Syehan Alwafa: Membantu membuat fitur tambah user di admin dan menyempurnakan database. 

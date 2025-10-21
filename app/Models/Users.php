@@ -2,12 +2,9 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable
+class Users extends Model
 {
     protected $table = 'user'; // Nama tabel di database
     protected $primaryKey = 'id_user'; // Primary key tabel
@@ -20,8 +17,4 @@ class User extends Authenticatable
         'id_role',
     ];
 
-    public function role()
-    {
-        return $this->belongsTo(Role::class, 'id_role');
-    }
 }
