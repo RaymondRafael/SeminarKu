@@ -56,10 +56,7 @@ Dengan adanya sistem ini, diharapkan proses penyelenggaraan seminar di Universit
 ------------------------------------------------------------------------
 
 ## Tools yang Digunakan
-
-  Tools         Fungsi
-  ------------- ---------------------------------
-  **Laravel**   Framework utama aplikasi
-  **iMagick**   Generate QR Code untuk presensi
-  **MySQL**     Penyimpanan data
-  **Laragon**   Development environment untuk menjalankan Laravel & MySQL
+-  **Laravel** = Framework utama aplikasi
+-  **iMagick** = Generate QR Code untuk presensi
+-  **MySQL**   = Penyimpanan data
+-  **Laragon** = Development environment untuk menjalankan Laravel & MySQL
