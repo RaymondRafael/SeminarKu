@@ -57,15 +57,15 @@
                 <div class="form-container">
                     <div class="form-sidebar">
                         <div class="form-sidebar-content">
-                            <h2>Welcome Back</h2>
-                            <p>Log in to access your account and manage your seminar registrations.</p>
+                            <h2>Selamat Datang kembali</h2>
+                            <p>Log in untuk mengakses akun Anda dan mengelola pendaftaran acara Anda.</p>
                             <img src="https://images.pexels.com/photos/7103/writing-notes-idea-conference.jpg"
                                 alt="University event" class="sidebar-image">
                         </div>
                     </div>
                     <div class="form-content">
                         <h1>Log In</h1>
-                        <p class="form-subtitle">Enter your credentials to access your account</p>
+                        <p class="form-subtitle">Masukkan kredensial Anda untuk mengakses akun Anda</p>
 
                         @if ($errors->any())
                             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6"
@@ -82,14 +82,14 @@
                             <div class="form-group">
                                 <label for="email">Email Address</label>
                                 <input type="email" id="email" name="email"
-                                    placeholder="Enter your email address" required>
+                                    placeholder="Masukkan alamat email Anda" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="password">Password</label>
                                 <div class="password-input">
                                     <input type="password" id="password" name="password"
-                                        placeholder="Enter your password" required>
+                                        placeholder="Masukkan kata sandi Anda" required>
                                     <button type="button" class="password-toggle">
                                         <i class="fas fa-eye"></i>
                                     </button>
@@ -101,7 +101,6 @@
                                     <input type="checkbox" id="remember" name="remember">
                                     <label for="remember">Remember me</label>
                                 </div>
-                                <a href="forgot-password.html" class="forgot-password">Forgot password?</a>
                             </div>
 
                             <div class="form-group">
@@ -109,7 +108,12 @@
                             </div>
 
                             <div class="form-footer">
-                                <p>Don't have an account? <a href={{ route('register.index') }}>Sign Up</a></p>
+                                <p>Belum punya akun? <a href={{ route('register.index') }}>Sign Up</a></p>
+                            </div>
+                            <div class="form-footer">
+                                <a href="/" class="btn btn-outline" style="margin-top: 12px;">
+                                    &larr; Kembali ke Beranda
+                                </a>
                             </div>
                         </form>
                     </div>

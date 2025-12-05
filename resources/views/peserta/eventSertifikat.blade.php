@@ -1,4 +1,5 @@
 @extends('layouts.sidebar')
+
 @section('content')
     <div class="dashboard-container">
         <!-- Main Content -->
@@ -9,102 +10,77 @@
                     <button type="button" class="menu-toggle">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <div class="header-title">
+                    <div class="header-title" style="padding: 10px">
                         <h1>My Certificates</h1>
-                    </div>
-                    <div class="header-actions">
-                        <div class="search-bar">
-                            <input type="text" placeholder="Search certificates...">
-                            <button type="button">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
                     </div>
                 </div>
             </header>
 
             <!-- Dashboard Content -->
             <div class="dashboard-content">
+                <div class="dashboard-welcome">
+                    <h2>Sertifikat Saya</h2>
+                    <p>Lihat dan unduh sertifikat dari seminar yang telah Anda ikuti.</p>
+
+                </div>
+
+                <form method="GET" action="{{ route('peserta.sertifikat') }}">
+                    <select name="event" onchange="this.form.submit()" class="form-control">
+                        <option value="all" {{ request('event') == 'all' ? 'selected' : '' }}>Semua Kegiatan</option>
+                        @foreach ($allEvents as $event)
+                            <option value="{{ $event->id_kegiatan }}"
+                                {{ request('event') == $event->id_kegiatan ? 'selected' : '' }}>
+                                {{ $event->nama_kegiatan }}
+                            </option>
+                        @endforeach
+                    </select>
+                </form>
+
                 <div class="certificates-grid">
-                    <!-- Certificate Card 1 -->
-                    <div class="certificate-card">
-                        <div class="certificate-preview">
-                            <img src="https://images.pexels.com/photos/3760514/pexels-photo-3760514.jpeg" alt="Leadership Workshop Certificate">
-                            <div class="certificate-overlay">
-                                <div class="overlay-actions">
-                                    <button class="btn btn-primary btn-sm">
-                                        <i class="fas fa-download"></i> Download
-                                    </button>
-                                    <button class="btn btn-outline btn-sm">
-                                        <i class="fas fa-share"></i> Share
-                                    </button>
+                    @forelse ($sertifikatSaya as $serti)
+                        <div class="certificate-card">
+                            <div class="certificate-preview">
+                                <iframe src="{{ asset('storage/' . $serti->file) }}" width="100%" height="200px"
+                                    frameborder="0"></iframe>
+                            </div>
+                            <div class="certificate-info">
+                                <h3>{{ $serti->kegiatan_nama }} <span class="certificate-type">{{ $serti->sesi }}</span>
+                                </h3>
+                                <p><i class="fas fa-calendar"></i> {{ $serti->tanggal }}</p>
+                                <p><i class="fas fa-clock"></i> {{ $serti->waktu }} </p>
+                                <div class="certificate-meta">
+                                    <div class="overlay-actions">
+                                        <a href="{{ asset('storage/' . $serti->file) }}" download
+                                            class="btn btn-outline btn-sm">
+                                            <i class="fas fa-download"></i> Download
+                                        </a>
+                                        <button onclick="shareSertifikat('{{ asset('storage/' . $serti->file) }}')"
+                                            class="btn btn-outline btn-sm">
+                                            <i class="fas fa-share"></i> Share
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="certificate-info">
-                            <h3>Leadership Workshop</h3>
-                            <p><i class="fas fa-calendar"></i> May 10, 2025</p>
-                            <p><i class="fas fa-clock"></i> 4 Hours</p>
-                            <div class="certificate-meta">
-                                <span class="certificate-id">CERT-2025-001</span>
-                                <span class="certificate-type">Workshop</span>
-                            </div>
-                        </div>
-                    </div>
+                    @empty
+                        <p style="text-align: center; color: #6B7280;">Belum ada sertifikat yang tersedia.</p>
+                    @endforelse
 
-                    <!-- Certificate Card 2 -->
-                    <div class="certificate-card">
-                        <div class="certificate-preview">
-                            <img src="https://images.pexels.com/photos/3760514/pexels-photo-3760514.jpeg" alt="Design Thinking Certificate">
-                            <div class="certificate-overlay">
-                                <div class="overlay-actions">
-                                    <button class="btn btn-primary btn-sm">
-                                        <i class="fas fa-download"></i> Download
-                                    </button>
-                                    <button class="btn btn-outline btn-sm">
-                                        <i class="fas fa-share"></i> Share
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="certificate-info">
-                            <h3>Design Thinking Seminar</h3>
-                            <p><i class="fas fa-calendar"></i> April 22, 2025</p>
-                            <p><i class="fas fa-clock"></i> 6 Hours</p>
-                            <div class="certificate-meta">
-                                <span class="certificate-id">CERT-2025-002</span>
-                                <span class="certificate-type">Seminar</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Certificate Card 3 -->
-                    <div class="certificate-card">
-                        <div class="certificate-preview">
-                            <img src="https://images.pexels.com/photos/3760514/pexels-photo-3760514.jpeg" alt="Tech Conference Certificate">
-                            <div class="certificate-overlay">
-                                <div class="overlay-actions">
-                                    <button class="btn btn-primary btn-sm">
-                                        <i class="fas fa-download"></i> Download
-                                    </button>
-                                    <button class="btn btn-outline btn-sm">
-                                        <i class="fas fa-share"></i> Share
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="certificate-info">
-                            <h3>Annual Tech Conference</h3>
-                            <p><i class="fas fa-calendar"></i> March 15, 2025</p>
-                            <p><i class="fas fa-clock"></i> 8 Hours</p>
-                            <div class="certificate-meta">
-                                <span class="certificate-id">CERT-2025-003</span>
-                                <span class="certificate-type">Conference</span>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </main>
     </div>
+
+    <script>
+        function shareSertifikat(url) {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Sertifikat Kegiatan',
+                    url: url
+                }).catch(console.error);
+            } else {
+                prompt("Salin link sertifikat:", url);
+            }
+        }
+    </script>
 @endsection

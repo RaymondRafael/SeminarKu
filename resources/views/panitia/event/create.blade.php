@@ -9,7 +9,7 @@
                     <button type="button" class="menu-toggle">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <div class="header-title">
+                    <div class="header-title" style="padding: 10px">
                         <h1>Buat Seminar</h1>
                     </div>
                 </div>
@@ -19,7 +19,7 @@
                 <div class="admin-form">
                     <div class="admin-form-header">
                         <h2>Buat Seminar Universitas</h2>
-                        <p>Masukkan detail untuk Seminar baru</p>
+                        <p>Masukkan detail untuk seminar baru</p>
                     </div>
 
                     <form method="POST" action="{{ route('panitia.event.store') }}">

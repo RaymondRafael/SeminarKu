@@ -39,12 +39,12 @@
                     <div class="form-sidebar">
                         <div class="form-sidebar-content">
                             <h2>Gabung di SeminarKu</h2>
-                            <p>Bikin akun biar bisa cari dan ikut berbagai seminar seru di kampus.</p>
+                            <p>Bikin akun biar bisa cari dan ikut berbagai acara seru di kampus.</p>
                             <ul class="feature-list">
-                                <li><i class="fas fa-check"></i> Daftar seminar spesial buat kamu</li>
-                                <li><i class="fas fa-check"></i> Lihat riwayat seminar yang pernah diikutin</li>
+                                <li><i class="fas fa-check"></i> Daftar acara spesial buat kamu</li>
+                                <li><i class="fas fa-check"></i> Lihat riwayat acara yang pernah diikutin</li>
                                 <li><i class="fas fa-check"></i> Dapat sertifikat otomatis setelah hadir</li>
-                                <li><i class="fas fa-check"></i> Rekomendasi seminar yang sesuai minat kamu</li>
+                                <li><i class="fas fa-check"></i> Rekomendasi acara yang sesuai minat kamu</li>
                             </ul>
                         </div>
                     </div>
@@ -84,19 +84,17 @@
                                     </button>
                                 </div>
                             </div>
-
-                            <div class="form-group checkbox">
-                                <input type="checkbox" id="terms" name="terms" required>
-                                <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a
-                                        href="#">Privacy Policy</a></label>
-                            </div>
-
                             <div class="form-group">
                                 <button type="submit" class="btn btn-primary btn-block">Buat Akun</button>
                             </div>
 
                             <div class="form-footer">
                                 <p>Sudah punya akun? <a href={{ route('login.index') }}>Log In</a></p>
+                            </div>
+                            <div class="form-footer">
+                                <a href="/" class="btn btn-outline" style="margin-top: 12px;">
+                                    &larr; Kembali ke Beranda
+                                </a>
                             </div>
                         </form>
                     </div>

@@ -7,22 +7,8 @@
                     <button type="button" class="menu-toggle">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <div class="header-title">
+                    <div class="header-title" style="padding: 10px">
                         <h1>Seminar Detail</h1>
-                    </div>
-                    <div class="header-actions">
-                        <div class="search-bar">
-                            <input type="text" placeholder="Search...">
-                            <button type="button">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                        <div class="notifications">
-                            <button type="button" class="notification-btn">
-                                <i class="fas fa-bell"></i>
-                                <span class="notification-badge">3</span>
-                            </button>
-                        </div>
                     </div>
                 </div>
             </header>
@@ -85,7 +71,8 @@
                                 <h2>Informasi Seminar</h2>
                                 <div class="schedule-timeline">
                                     @foreach ($detailKegiatan as $sesi)
-                                        <div class="timeline-item">
+                                        <div class="timeline-item"
+                                            style="border: 1px solid #ccc; border-radius: 8px; margin-bottom: 20px; padding: 20px; background-color: #f9f9f9; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                                             <div class="timeline-content">
                                                 <h3>Sesi: {{ $sesi->sesi }}</h3>
                                                 <div>
@@ -114,6 +101,16 @@
                                                     <i class="fas fa-users"></i> Maksimal : {{ $sesi->maksimal_peserta }}
                                                     peserta
                                                 </div>
+
+                                                {{-- Tombol edit/hapus untuk panitia --}}
+                                                @if (session('user.id_role') === 2)
+                                                    <div style="margin-top: 15px; display: flex; gap: 10px;">
+                                                        <a href="{{ route('panitia.event.sesi.edit', ['id_sesi' => $sesi->id_detail_kegiatan]) }}"
+                                                            style="background-color: #ffc107; color: #000; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 14px;">
+                                                            <i class="fas fa-edit"></i> Edit
+                                                        </a>
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
                                     @endforeach
@@ -136,13 +133,7 @@
                                         <div class="registration-info">
                                             @foreach ($detailKegiatan as $sesi)
                                                 <div class="info-item">
-                                                    <span class="label">Kapasitas Sesi {{ $sesi->sesi }}
-                                                        {{-- Cek apakah user sudah daftar sesi ini --}}
-                                                        @if ($sesi->registrasi->isNotEmpty())
-                                                            <span style="color: green; font-weight: bold;">(Sudah
-                                                                daftar)</span>
-                                                        @endif
-                                                    </span>
+                                                    <span class="label">Kapasitas Sesi {{ $sesi->sesi }} </span>
                                                     <span class="value">
                                                         {{ $sesi->registrasi_count }} / {{ $sesi->maksimal_peserta }}
 
@@ -157,48 +148,62 @@
                                                     class="value">{{ \Carbon\Carbon::parse($kegiatan->tanggal_mulai)->format('d M Y') }}</span>
                                             </div>
                                         </div>
+                                        @foreach ($detailKegiatan as $sesi)
+                                            @php $status = $sesiStatus[$sesi->id_detail_kegiatan]; @endphp
+                                        @endforeach
                                         <div class="card-footer">
-                                            <a href="{{ route('peserta.event.create', ['id_kegiatan' => $kegiatan->id_kegiatan]) }}"
+                                            @if($status == 'closed')
+                                                <button class="btn btn-secondary btn-block" disabled>Registrasi Ditutup</button>
+                                            @elseif($status == 'registered')
+                                                <button class="btn btn-secondary btn-block" disabled>Anda sudah registrasi</button>
+                                            @elseif($status == 're-register')
+                                                <a href="{{ route('peserta.event.create', ['id_kegiatan' => $kegiatan->id_kegiatan]) }}"
+                                                class="btn btn-primary btn-block">Registrasi Ulang</a>
+                                            @elseif($status == 'can-register')
+                                                <a href="{{ route('peserta.event.create', ['id_kegiatan' => $kegiatan->id_kegiatan]) }}"
                                                 class="btn btn-primary btn-block">Registrasi Sekarang!</a>
+                                            @else
+                                                <button class="btn btn-secondary btn-block" disabled>Tidak dapat registrasi</button>
+                                            @endif
+                                        </div>
+                                        
+                                    </div>
+
+                                    <div class="event-location">
+                                        <h3>Location</h3>
+                                        <div class="location-info">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            <div>
+                                                <p class="location-name">Main Auditorium</p>
+                                                <p class="location-address">University Campus, Building 3, Floor 1</p>
+                                                <p class="location-city">University City, UC 12345</p>
+                                            </div>
+                                        </div>
+                                        <div class="location-map">
+                                            <img src="https://images.pexels.com/photos/408503/pexels-photo-408503.jpeg"
+                                                alt="Map location">
+                                            <a href="#" class="btn btn-outline btn-sm">View on Map</a>
+                                        </div>
+                                    </div>
+
+                                    <div class="share-event">
+                                        <h3>Share This Seminar</h3>
+                                        <div class="share-buttons">
+                                            <a href="#" class="share-button facebook">
+                                                <i class="fab fa-facebook-f"></i>
+                                            </a>
+                                            <a href="#" class="share-button twitter">
+                                                <i class="fab fa-twitter"></i>
+                                            </a>
+                                            <a href="#" class="share-button linkedin">
+                                                <i class="fab fa-linkedin-in"></i>
+                                            </a>
+                                            <a href="#" class="share-button email">
+                                                <i class="fas fa-envelope"></i>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="event-location">
-                                    <h3>Location</h3>
-                                    <div class="location-info">
-                                        <i class="fas fa-map-marker-alt"></i>
-                                        <div>
-                                            <p class="location-name">Main Auditorium</p>
-                                            <p class="location-address">University Campus, Building 3, Floor 1</p>
-                                            <p class="location-city">University City, UC 12345</p>
-                                        </div>
-                                    </div>
-                                    <div class="location-map">
-                                        <img src="https://images.pexels.com/photos/408503/pexels-photo-408503.jpeg"
-                                            alt="Map location">
-                                        <a href="#" class="btn btn-outline btn-sm">View on Map</a>
-                                    </div>
-                                </div>
-
-                                <div class="share-event">
-                                    <h3>Share This Seminar</h3>
-                                    <div class="share-buttons">
-                                        <a href="#" class="share-button facebook">
-                                            <i class="fab fa-facebook-f"></i>
-                                        </a>
-                                        <a href="#" class="share-button twitter">
-                                            <i class="fab fa-twitter"></i>
-                                        </a>
-                                        <a href="#" class="share-button linkedin">
-                                            <i class="fab fa-linkedin-in"></i>
-                                        </a>
-                                        <a href="#" class="share-button email">
-                                            <i class="fas fa-envelope"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
                         @endif
                     </div>
 

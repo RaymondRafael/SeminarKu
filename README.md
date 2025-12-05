@@ -1,5 +1,10 @@
 # Aplikasi Manajemen Seminar Universitas Kristen Maranatha
 
+Anggota Kelompok:
+2372025 - Raymond Rafael Anthony
+2372040 - Kaisar Naufal Naratama
+2372051 - Muhammad Syehan Alwafa
+
 ## Deskripsi Proyek
 
 Aplikasi Manajemen Seminar Universitas Kristen Maranatha adalah sistem informasi berbasis web yang dikembangkan untuk mendukung proses administrasi dan pelaksanaan kegiatan seminar di lingkungan Universitas Kristen Maranatha. Selama ini, proses manajemen seminar seperti publikasi acara, pendaftaran peserta, validasi kehadiran, hingga pembuatan sertifikat masih dilakukan secara terpisah dan sering kali manual, sehingga menimbulkan berbagai kendala seperti keterlambatan informasi, data peserta yang tidak terpusat, risiko human error, dan proses presensi yang kurang efisien.
@@ -56,7 +61,10 @@ Dengan adanya sistem ini, diharapkan proses penyelenggaraan seminar di Universit
 ------------------------------------------------------------------------
 
 ## Tools yang Digunakan
--  **Laravel** = Framework utama aplikasi
--  **iMagick** = Generate QR Code untuk presensi
--  **MySQL**   = Penyimpanan data
--  **Laragon** = Development environment untuk menjalankan Laravel & MySQL
+
+  Tools         Fungsi
+  ------------- ---------------------------------
+  **Laravel**   Framework utama aplikasi
+  **iMagick**   Generate QR Code untuk presensi
+  **MySQL**     Penyimpanan data
+  **Laragon**   Lingkungan server lokal

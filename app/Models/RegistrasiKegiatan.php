@@ -37,4 +37,13 @@ class RegistrasiKegiatan extends Model
         return $this->belongsTo(DetailKegiatan::class, 'id_detail_kegiatan', 'id_detail_kegiatan');
     }
 
+    public function presensi()
+    {
+        return $this->hasOne(Presensi::class, 'id_registrasi');
+    }
+
+    public function sertifikat()
+    {
+        return $this->hasOne(Sertifikat::class, 'id_registrasi');
+    }
 }

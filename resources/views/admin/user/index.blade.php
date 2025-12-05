@@ -9,22 +9,8 @@
                     <button type="button" class="menu-toggle">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <div class="header-title">
+                    <div class="header-title" style="padding: 10px">
                         <h1>Data User</h1>
-                    </div>
-                    <div class="header-actions">
-                        <div class="search-bar">
-                            <input type="text" placeholder="Search...">
-                            <button type="button">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                        <div class="notifications">
-                            <button type="button" class="notification-btn">
-                                <i class="fas fa-bell"></i>
-                                <span class="notification-badge">5</span>
-                            </button>
-                        </div>
                     </div>
                 </div>
             </header>
@@ -154,7 +140,12 @@
                                     <td style="padding: 20px; text-align: center;">
                                         <div>
                                             <a href="{{ route('admin.user.edit', ['id' => $user->id_user]) }}" class="btn-icon" title="Edit"><i class="fas fa-edit"></i></a>
-                                            <a class="btn-icon" title="Delete"><i class="fas fa-trash-alt"></i></a>
+                                            <form action="{{ route('admin.user.delete', ['id' => $user->id_user]) }}" method="POST" style="display:inline;" onsubmit="return confirm('Yakin ingin menghapus user ini?')">
+                                                @csrf
+                                                <button type="submit" class="btn-icon" title="Delete" style="background:none; border:none; color:#e3342f;">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>

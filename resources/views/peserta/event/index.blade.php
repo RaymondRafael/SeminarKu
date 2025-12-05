@@ -7,22 +7,8 @@
                     <button type="button" class="menu-toggle">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <div class="header-title">
-                        <h1>Event</h1>
-                    </div>
-                    <div class="header-actions">
-                        <div class="search-bar">
-                            <input type="text" placeholder="Search...">
-                            <button type="button">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                        <div class="notifications">
-                            <button type="button" class="notification-btn">
-                                <i class="fas fa-bell"></i>
-                                <span class="notification-badge">3</span>
-                            </button>
-                        </div>
+                    <div class="header-title" style="padding: 10px">
+                        <h1>Seminars</h1>
                     </div>
                 </div>
             </header>
@@ -117,7 +103,7 @@
                                 </div>
                             </div>
                         @empty
-                            <p>Tidak ada event yang tersedia.</p>
+                            <p>Tidak ada seminar yang tersedia.</p>
                         @endforelse
                     </div>
 

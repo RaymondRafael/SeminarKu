@@ -7,22 +7,8 @@
                     <button type="button" class="menu-toggle">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <div class="header-title">
+                    <div class="header-title" style="padding: 10px">
                         <h1>Buat Seminar</h1>
-                    </div>
-                    <div class="header-actions">
-                        <div class="search-bar">
-                            <input type="text" placeholder="Search...">
-                            <button type="button">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                        <div class="notifications">
-                            <button type="button" class="notification-btn">
-                                <i class="fas fa-bell"></i>
-                                <span class="notification-badge">3</span>
-                            </button>
-                        </div>
                     </div>
                 </div>
             </header>
@@ -119,7 +105,7 @@
                                     <div class="event-footer">
                                         <a href="{{ route('panitia.event.createSesi', ['id_kegiatan' => $event->id_kegiatan]) }}" class="btn btn-sm btn-outline">Buat Sesi</a>
                                         <a href="{{ route('event.detailEvent', ['id' => $event->id_kegiatan]) }}" class="btn btn-sm btn-outline">Details Event</a>
-                                        <a href="#" class="btn btn-sm btn-outline">Hapus Seminar</a>
+                                        <a href="{{ route('panitia.event.edit', ['id_kegiatan' => $event->id_kegiatan]) }}" class="btn btn-sm btn-outline">Edit Event</a>
                                     </div>
                                 </div>
                             </div>

@@ -8,10 +8,57 @@ use App\Models\User;
 use App\Models\DetailKegiatan;
 use Carbon\Carbon;
 use App\Models\RegistrasiKegiatan;
+use App\Models\Sertifikat;
 
 class PesertaController extends Controller
 {
     public function index()
+    {
+        $idUser = session('user.id');
+
+        $totalRegistrasi = RegistrasiKegiatan::where('id_user', $idUser)->count();
+        $totalSertifikat = Sertifikat::whereHas('registrasi', function ($q) use ($idUser) {
+            $q->where('id_user', $idUser);
+        })->count();
+        $totalBayar = RegistrasiKegiatan::where('id_user', $idUser)
+            ->whereNotNull('bukti_pembayaran')
+            ->with('detailKegiatan') // pastikan eager loading
+            ->get()
+            ->sum(function ($item) {
+                return $item->detailKegiatan->biaya_registrasi ?? 0;
+            });
+
+        $totalUpcoming = RegistrasiKegiatan::where('id_user', $idUser)
+            ->whereHas('detailKegiatan', function ($q) {
+                $q->where('tanggal', '>=', now());
+            })->count();
+
+        $upcomingEvents = RegistrasiKegiatan::with(['detailKegiatan.kegiatan'])
+            ->where('id_user', $idUser)
+            ->whereHas('detailKegiatan', function ($q) {
+                $q->where('tanggal', '>=', now());
+            })
+            ->orderBy('tanggal_registrasi', 'desc')
+            ->get();
+
+        $sertifikat = Sertifikat::with(['registrasi.detailKegiatan.kegiatan'])
+            ->whereHas('registrasi', fn($q) => $q->where('id_user', $idUser))
+            ->orderBy('waktu_unggah', 'desc')
+            ->take(5)
+            ->get();
+
+        return view('peserta.index', compact(
+            'totalRegistrasi',
+            'totalSertifikat',
+            'totalBayar',
+            'totalUpcoming',
+            'upcomingEvents',
+            'sertifikat'
+        ));
+    }
+
+
+    public function indexEvent()
     {
         $panitiaUserIds = User::whereHas('role', function ($query) {
             $query->where('nama_role', 'panitia');
@@ -95,6 +142,91 @@ class PesertaController extends Controller
             ]);
         }
 
-        return redirect()->route('peserta.event.index')->with('success', 'Berhasil mendaftar kegiatan.');
+        return redirect()->route('event.detailEvent', ['id' => $sesi->id_kegiatan])->with('success', 'Berhasil mendaftar kegiatan');
+    }
+
+
+    public function myQrCodes(Request $request)
+    {
+        $eventId = $request->query('event');
+        $userId = session('user.id'); // Ambil ID user dari session
+
+        // Ambil semua event untuk dropdown
+        $allEvents = Kegiatan::all();
+
+        // Query registrasi pending (jika kamu masih ingin menampilkannya)
+        $pendingRegistrasi = RegistrasiKegiatan::with(['user', 'detailKegiatan.kegiatan'])
+            ->when($eventId, function ($query, $eventId) {
+                $query->whereHas('detailKegiatan.kegiatan', function ($q) use ($eventId) {
+                    $q->where('id_kegiatan', $eventId);
+                });
+            })
+            ->where('id_user', $userId) // 🔒 Hanya user ini
+            ->orderBy('tanggal_registrasi', 'desc')
+            ->get();
+
+        // Query QR code yang disetujui & milik user saat ini
+        $qrRegistrasi = RegistrasiKegiatan::with(['detailKegiatan.kegiatan'])
+            ->where('status_konfirmasi', 'Disetujui')
+            ->whereNotNull('kode_qr')
+            ->where('id_user', $userId) // 🔒 Filter user login
+            ->when($eventId, function ($query, $eventId) {
+                $query->whereHas('detailKegiatan.kegiatan', function ($q) use ($eventId) {
+                    $q->where('id_kegiatan', $eventId);
+                });
+            })
+            ->orderBy('tanggal_registrasi', 'desc')
+            ->get();
+
+        return view('peserta.eventQr', compact('qrRegistrasi', 'allEvents', 'pendingRegistrasi'));
+    }
+
+    public function Sertifikat(Request $request)
+    {
+        $user = session('user'); // Ambil data user dari session
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
+        }
+
+        $userId = $user['id'];
+
+        // Ambil semua kegiatan untuk filter (jika ingin pakai filter kegiatan)
+        $allEvents = Kegiatan::all();
+
+        // Ambil semua sertifikat milik user
+        $sertifikatSaya = Sertifikat::with('registrasi.detailKegiatan.kegiatan')
+            ->whereHas('registrasi', function ($query) use ($userId) {
+                $query->where('id_user', $userId);
+            })
+            ->when($request->filled('event') && $request->input('event') != 'all', function ($query) use ($request) {
+                $query->whereHas('registrasi.detailKegiatan', function ($subQuery) use ($request) {
+                    $subQuery->where('id_kegiatan', $request->input('event'));
+                });
+            })
+
+            ->get()
+            ->map(function ($serti) {
+                $detail = $serti->registrasi->detailKegiatan ?? null;
+                $kegiatan = $detail->kegiatan ?? null;
+
+                $waktu = '-';
+                if ($detail && $detail->waktu_mulai && $detail->waktu_selesai) {
+                    $waktu = Carbon::parse($detail->waktu_mulai)->format('H:i') . ' - ' .
+                        Carbon::parse($detail->waktu_selesai)->format('H:i');
+                }
+
+                return (object)[
+                    'id_sertifikat'   => $serti->id_sertifikat,
+                    'file'            => $serti->sertifikat,
+                    'kegiatan_nama'   => $kegiatan->nama_kegiatan ?? 'Nama Kegiatan Tidak Ditemukan',
+                    'tanggal'         => optional($detail)->tanggal
+                        ? Carbon::parse($detail->tanggal)->format('d M Y')
+                        : '-',
+                    'waktu'           => $waktu,
+                    'sesi'            => $detail->nama_sesi ?? '-',
+                ];
+            });
+
+        return view('peserta.eventSertifikat', compact('sertifikatSaya', 'allEvents'));
     }
 }

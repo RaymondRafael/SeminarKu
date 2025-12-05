@@ -9,7 +9,7 @@
                     <button type="button" class="menu-toggle">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <div class="header-title">
+                    <div class="header-title" style="padding: 10px">
                         <h1>Buat Sesi Seminar</h1>
                     </div>
                 </div>

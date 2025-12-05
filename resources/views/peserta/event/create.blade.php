@@ -8,8 +8,8 @@
                     <button type="button" class="menu-toggle">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <div class="header-title">
-                        <h1>Register Kegiatan</h1>
+                    <div class="header-title" style="padding: 10px">
+                        <h1>Register Seminar</h1>
                     </div>
                 </div>
             </header>
@@ -17,8 +17,8 @@
             <div class="dashboard-content">
                 <div class="admin-form">
                     <div class="admin-form-header">
-                        <h2>Daftar Event - <span style="color: blue">{{ $kegiatan->nama_kegiatan }}</span></h2>
-                        <p>Masukkan detail pendaftaran kegiatan</p>
+                        <h2>Daftar Seminar - <span style="color: blue">{{ $kegiatan->nama_kegiatan }}</span></h2>
+                        <p>Masukkan detail pendaftaran seminar</p>
                     </div>
 
                     <form method="POST" action="{{ route('peserta.event.store') }}" enctype="multipart/form-data">
@@ -39,7 +39,7 @@
                             <input type="hidden" name="tanggal_registrasi" value="{{ now() }}">
 
                             <div class="form-group">
-                                <label class="form-label"><strong>Pilih Sesi Kegiatan</strong></label>
+                                <label class="form-label"><strong>Pilih Sesi Seminar</strong></label>
                                 <div class="checkbox-list">
                                     @foreach ($sesiKegiatans as $detail)
                                         <div class="checkbox-card">

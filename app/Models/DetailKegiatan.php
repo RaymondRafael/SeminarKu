@@ -35,5 +35,8 @@ class DetailKegiatan extends Model
     {
         return $this->hasMany(RegistrasiKegiatan::class, 'id_detail_kegiatan', 'id_detail_kegiatan');
     }
+
+
+
 }
 
