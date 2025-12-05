@@ -1,61 +1,65 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Aplikasi Manajemen Seminar Universitas Kristen Maranatha
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Deskripsi Proyek
 
-## About Laravel
+Aplikasi Manajemen Seminar Universitas Kristen Maranatha adalah sistem informasi berbasis web yang dikembangkan untuk mendukung proses administrasi dan pelaksanaan kegiatan seminar di lingkungan Universitas Kristen Maranatha. Selama ini, proses manajemen seminar seperti publikasi acara, pendaftaran peserta, validasi kehadiran, hingga pembuatan sertifikat masih dilakukan secara terpisah dan sering kali manual, sehingga menimbulkan berbagai kendala seperti keterlambatan informasi, data peserta yang tidak terpusat, risiko human error, dan proses presensi yang kurang efisien.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Proyek ini bertujuan untuk menyediakan sebuah platform terintegrasi yang mampu mengelola seluruh tahapan kegiatan seminar secara digital. Sistem ini memungkinkan panitia untuk membuat dan mempublikasikan seminar, mengelola kuota peserta, memantau registrasi, serta melakukan verifikasi kehadiran melalui QR Code. Selain itu, peserta dapat melakukan pendaftaran secara mandiri, melihat riwayat seminar yang diikuti, serta mengunduh sertifikat yang dihasilkan secara otomatis oleh sistem.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Dengan adanya sistem ini, diharapkan proses penyelenggaraan seminar di Universitas Kristen Maranatha menjadi lebih efektif, transparan, dan terdokumentasi dengan baik.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+------------------------------------------------------------------------
 
-## Learning Laravel
+## Proses Bisnis
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 1. Peserta
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+1.  Daftar akun
+2.  Login
+3.  Melihat daftar seminar
+4.  Daftar seminar
+5.  Melakukan pembayaran (jika berbayar)
+6.  Mengunggah bukti pembayaran
+7.  Mengikuti seminar
+8.  Absen menggunakan QR Code
+9.  Menerima sertifikat
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 2. Admin
 
-## Laravel Sponsors
+1.  Login
+2.  Mengelola data user (Panitia, Tim Keuangan, Peserta)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 3. Panitia
 
-### Premium Partners
+1.  Login
+2.  Membuat seminar
+3.  Membuat sesi seminar
+4.  Melakukan scan QR Code untuk presensi
+5.  Mengirim sertifikat ke peserta
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 4. Tim Keuangan
 
-## Contributing
+1.  Login
+2.  Melihat bukti pembayaran
+3.  Menerima atau menolak bukti pembayaran
+4.  Memberikan status pembayaran kepada peserta
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+------------------------------------------------------------------------
 
-## Code of Conduct
+## User Roles
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+-   **Admin**
+-   **Panitia**
+-   **Tim Keuangan**
+-   **Peserta**
 
-## Security Vulnerabilities
+------------------------------------------------------------------------
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Tools yang Digunakan
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+  Tools         Fungsi
+  ------------- ---------------------------------
+  **Laravel**   Framework utama aplikasi
+  **iMagick**   Generate QR Code untuk presensi
+  **MySQL**     Penyimpanan data
+  **Laragon**   Development environment untuk menjalankan Laravel & MySQL
