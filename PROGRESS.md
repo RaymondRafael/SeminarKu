@@ -25,3 +25,8 @@
 # 2372025 - Raymond Rafael Anthony: Membuat fitur sertifikat, panitia sudah bisa mengirim sertifikat ke peserta.
 # 2372040 - Kaisar Naufal Naratama: Membuat dan merapihkan dashboard dari semua role.
 # 2372051 - Muhammad Syehan Alwafa: Membuat fitur scanning barcode, peserta sudah bisa meng scan barcode nya.
+
+# 12 Desember 2025 - 19 Desember 2025
+# 2372025 - Raymond Rafael Anthony: Melakukan testing fitur sertifikat, generate QR code, dan fitur pembayaran.
+# 2372040 - Kaisar Naufal Naratama: Melakukan testing responsiveness.
+# 2372051 - Muhammad Syehan Alwafa: Melakukan testing barcode scanning dan registrasi peserta.
