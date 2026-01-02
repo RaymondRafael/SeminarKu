@@ -47,22 +47,31 @@ class KeuanganController extends Controller
     public function indexLP(Request $request)
     {
         $eventId = $request->query('event');
+        $status = $request->query('status'); // Ambil filter status dari URL
 
-        // Ambil semua event untuk dropdown
         $allEvents = Kegiatan::all();
 
-        // Query registrasi, difilter jika ada ID event
-        $pendingRegistrasi = RegistrasiKegiatan::with(['user', 'detailKegiatan.kegiatan'])
+        $registrasiData = RegistrasiKegiatan::with(['user', 'detailKegiatan.kegiatan'])
+            // 1. Logic Filter Event
             ->when($eventId, function ($query, $eventId) {
                 $query->whereHas('detailKegiatan.kegiatan', function ($q) use ($eventId) {
                     $q->where('id_kegiatan', $eventId);
                 });
             })
+            // 2. Logic Filter Status
+            ->when($status, function ($query, $status) {
+                if ($status == 'pending') {
+                    return $query->where('status_konfirmasi', 'Pending');
+                } elseif ($status == 'selesai') {
+                    return $query->whereIn('status_konfirmasi', ['Disetujui', 'Ditolak']);
+                }
+            })
             ->orderBy('tanggal_registrasi', 'desc')
             ->get();
 
-        return view('keuangan.laporanPembayaran', compact('pendingRegistrasi', 'allEvents'));
+        return view('keuangan.laporanPembayaran', compact('registrasiData', 'allEvents'));
     }
+
 
     public function terima($id)
     {
@@ -87,7 +96,6 @@ class KeuanganController extends Controller
 
         return redirect()->back()->with('success', 'Registrasi berhasil disetujui dan QR Code dibuat.');
     }
-
 
 
     public function tolak(Request $request, $id)

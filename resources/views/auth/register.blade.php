@@ -84,9 +84,27 @@
                                     </button>
                                 </div>
                             </div>
+
+                            <div class="form-group">
+                                <label for="password_confirmation">Konfirmasi Password</label>
+                                <div class="password-input">
+                                    <input type="password" id="password_confirmation" name="password_confirmation"
+                                        placeholder="Ulangi password" required>
+                                    <button type="button" class="password-toggle">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
                             <div class="form-group">
                                 <button type="submit" class="btn btn-primary btn-block">Buat Akun</button>
                             </div>
+                            
+                            @if ($errors->any())
+                                @foreach ($errors->all() as $error)
+                                    <p>{{ $error }}</p>
+                                @endforeach
+                            @endif
 
                             <div class="form-footer">
                                 <p>Sudah punya akun? <a href={{ route('login.index') }}>Log In</a></p>

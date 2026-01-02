@@ -20,7 +20,7 @@ class RegisterController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'email' => 'required|email|unique:user,email',
-            'password' => 'required|string|min:8', // gunakan password_confirmation
+            'password' => 'required|string|min:8|confirmed', // gunakan password_confirmation
         ]);
 
         // Simpan user ke database

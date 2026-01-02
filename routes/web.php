@@ -95,13 +95,20 @@ Route::middleware([AuthenticateRole::class . ':Panitia'])->group(function () {
 
 // ======================= KEUANGAN =======================
 Route::middleware([AuthenticateRole::class . ':Keuangan'])->group(function () {
-    Route::get('/keuangan/index', function () {
-        return view('keuangan.index');
-    });
+    
+    // HAPUS route closure ini, karena akan menimpa controller dan bikin data error
+    // Route::get('/keuangan/index', function () {
+    //    return view('keuangan.index');
+    // });
+
+    // Gunakan yang ini saja (yang pakai Controller)
     Route::get('keuangan/index', [KeuanganController::class, 'index'])->name('keuangan.index');
+    
     Route::get('keuangan/laporanPembayaran', [KeuanganController::class, 'indexLP'])->name('keuangan.laporanPembayaran');
-    Route::post('keuangan/laporanPembayaran/{id}/terima', [KeuanganController::class, 'terima'])->name('registrasi.terima');
-    Route::post('keuangan/laporanPembayaran/{id}/tolak', [KeuanganController::class, 'tolak'])->name('registrasi.tolak');
+    
+    // UBAH nama route di bawah ini agar sesuai dengan View
+    Route::post('keuangan/laporanPembayaran/{id}/terima', [KeuanganController::class, 'terima'])->name('keuangan.terima');
+    Route::post('keuangan/laporanPembayaran/{id}/tolak', [KeuanganController::class, 'tolak'])->name('keuangan.tolak');
 });
 
 

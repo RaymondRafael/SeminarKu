@@ -9,35 +9,29 @@ use App\Models\DetailKegiatan;
 use Carbon\Carbon;
 use App\Models\RegistrasiKegiatan;
 use App\Models\Sertifikat;
+use Illuminate\Support\Facades\Storage; // Tambahkan ini
 
 class PesertaController extends Controller
 {
+    // ... (Function index dan indexEvent biarkan tetap sama) ...
     public function index()
     {
         $idUser = session('user.id');
-
         $totalRegistrasi = RegistrasiKegiatan::where('id_user', $idUser)->count();
-        $totalSertifikat = Sertifikat::whereHas('registrasi', function ($q) use ($idUser) {
-            $q->where('id_user', $idUser);
-        })->count();
+        $totalSertifikat = Sertifikat::whereHas('registrasi', fn($q) => $q->where('id_user', $idUser))->count();
+        
         $totalBayar = RegistrasiKegiatan::where('id_user', $idUser)
-            ->whereNotNull('bukti_pembayaran')
-            ->with('detailKegiatan') // pastikan eager loading
+            ->where('status_konfirmasi', 'Disetujui') // Hitung yang lunas saja
+            ->with('detailKegiatan')
             ->get()
-            ->sum(function ($item) {
-                return $item->detailKegiatan->biaya_registrasi ?? 0;
-            });
+            ->sum(fn($item) => $item->detailKegiatan->biaya_registrasi ?? 0);
 
         $totalUpcoming = RegistrasiKegiatan::where('id_user', $idUser)
-            ->whereHas('detailKegiatan', function ($q) {
-                $q->where('tanggal', '>=', now());
-            })->count();
+            ->whereHas('detailKegiatan', fn($q) => $q->where('tanggal', '>=', now()))->count();
 
         $upcomingEvents = RegistrasiKegiatan::with(['detailKegiatan.kegiatan'])
             ->where('id_user', $idUser)
-            ->whereHas('detailKegiatan', function ($q) {
-                $q->where('tanggal', '>=', now());
-            })
+            ->whereHas('detailKegiatan', fn($q) => $q->where('tanggal', '>=', now()))
             ->orderBy('tanggal_registrasi', 'desc')
             ->get();
 
@@ -47,32 +41,17 @@ class PesertaController extends Controller
             ->take(5)
             ->get();
 
-        return view('peserta.index', compact(
-            'totalRegistrasi',
-            'totalSertifikat',
-            'totalBayar',
-            'totalUpcoming',
-            'upcomingEvents',
-            'sertifikat'
-        ));
+        return view('peserta.index', compact('totalRegistrasi', 'totalSertifikat', 'totalBayar', 'totalUpcoming', 'upcomingEvents', 'sertifikat'));
     }
-
 
     public function indexEvent()
     {
-        $panitiaUserIds = User::whereHas('role', function ($query) {
-            $query->where('nama_role', 'panitia');
-        })->pluck('id_user');
-
+        $panitiaUserIds = User::whereHas('role', fn($q) => $q->where('nama_role', 'panitia'))->pluck('id_user');
         $events = Kegiatan::whereIn('id_user', $panitiaUserIds)->get();
 
-
-
-        // Tambahkan properti untuk tanggal yang sudah diformat
         foreach ($events as $event) {
-            $start = \Carbon\Carbon::parse($event->tanggal_mulai);
-            $end = \Carbon\Carbon::parse($event->tanggal_selesai);
-
+            $start = Carbon::parse($event->tanggal_mulai);
+            $end = Carbon::parse($event->tanggal_selesai);
             if ($start->isSameDay($end)) {
                 $event->tanggal_display = $start->format('d M');
             } elseif ($start->format('M') === $end->format('M')) {
@@ -84,98 +63,81 @@ class PesertaController extends Controller
         return view('peserta.event.index', compact('events'));
     }
 
-    public function create($id_kegiatan)
+    public function create(Request $request, $id_kegiatan)
     {
         $kegiatan = Kegiatan::findOrFail($id_kegiatan);
         $sesiKegiatans = DetailKegiatan::where('id_kegiatan', $id_kegiatan)->get();
-
         return view('peserta.event.create', compact('kegiatan', 'sesiKegiatans'));
     }
 
-
+    // --- KEMBALI KE MANUAL STORE ---
     public function store(Request $request)
     {
+        // 1. Validasi (Wajib ada file bukti)
         $request->validate([
             'id_detail_kegiatan' => 'required|array|min:1',
             'id_detail_kegiatan.*' => 'exists:detail_kegiatan,id_detail_kegiatan',
-            'bukti_pembayaran' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg|max:2048', // Validasi Gambar
         ]);
 
-        $userId = session('user.id'); // ambil dari session
+        $userId = session('user.id');
         $tanggalRegistrasi = now();
 
-        $file = $request->file('bukti_pembayaran');
-        $originalName = time() . '_' . $file->getClientOriginalName();
-        $filePath = $file->storeAs('bukti_pembayaran', $originalName, 'public');
+        // 2. Upload Gambar
+        $pathBukti = null;
+        if ($request->hasFile('bukti_pembayaran')) {
+            // Simpan ke folder 'public/bukti_pembayaran'
+            $pathBukti = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
+        }
 
+        // 3. Simpan Data ke Database
+        $validSessions = [];
         foreach ($request->id_detail_kegiatan as $idDetail) {
-
-            // Cek kapasitas saat ini
-            $jumlahTerdaftar = RegistrasiKegiatan::where('id_detail_kegiatan', $idDetail)->count();
-
             $sesi = DetailKegiatan::find($idDetail);
-            if (!$sesi) {
-                continue; // sesi tidak ditemukan, skip
-            }
+            
+            // Cek Kapasitas & Duplikat
+            $jumlahTerdaftar = RegistrasiKegiatan::where('id_detail_kegiatan', $idDetail)->count();
+            if ($jumlahTerdaftar >= $sesi->maksimal_peserta) return redirect()->back()->with('error', "Sesi {$sesi->sesi} penuh.");
 
-            if ($jumlahTerdaftar >= $sesi->maksimal_peserta) {
-                // kapasitas penuh, batalkan pendaftaran sesi ini, bisa kasih flash message atau skip
-                return redirect()->back()->with('error', "Maaf, kapasitas sesi {$sesi->sesi} sudah penuh.");
-            }
+            $sudahTerdaftar = RegistrasiKegiatan::where('id_user', $userId)->where('id_detail_kegiatan', $idDetail)->exists();
+            if ($sudahTerdaftar) continue;
 
-            // Cek apakah user sudah daftar sesi ini
-            $sudahTerdaftar = RegistrasiKegiatan::where('id_user', $userId)
-                ->where('id_detail_kegiatan', $idDetail)
-                ->exists();
+            $validSessions[] = $idDetail;
+        }
 
-            if ($sudahTerdaftar) {
-                continue; // sudah daftar, skip
-            }
+        if (empty($validSessions)) return redirect()->back()->with('error', 'Sesi sudah terdaftar atau penuh.');
 
+        foreach ($validSessions as $idDetail) {
             RegistrasiKegiatan::create([
                 'id_user' => $userId,
                 'id_detail_kegiatan' => $idDetail,
                 'tanggal_registrasi' => $tanggalRegistrasi,
-                'kode_qr' => null,
-                'bukti_pembayaran' => $filePath,
+                'bukti_pembayaran' => $pathBukti, // Simpan Path Gambar
                 'status_konfirmasi' => 'Pending',
+                'kode_qr' => null
             ]);
         }
 
-        return redirect()->route('event.detailEvent', ['id' => $sesi->id_kegiatan])->with('success', 'Berhasil mendaftar kegiatan');
+        return redirect()->route('peserta.index')->with('success', 'Pendaftaran berhasil! Silakan tunggu verifikasi admin.');
     }
-
 
     public function myQrCodes(Request $request)
     {
         $eventId = $request->query('event');
-        $userId = session('user.id'); // Ambil ID user dari session
-
-        // Ambil semua event untuk dropdown
+        $userId = session('user.id'); 
         $allEvents = Kegiatan::all();
 
-        // Query registrasi pending (jika kamu masih ingin menampilkannya)
-        $pendingRegistrasi = RegistrasiKegiatan::with(['user', 'detailKegiatan.kegiatan'])
-            ->when($eventId, function ($query, $eventId) {
-                $query->whereHas('detailKegiatan.kegiatan', function ($q) use ($eventId) {
-                    $q->where('id_kegiatan', $eventId);
-                });
-            })
-            ->where('id_user', $userId) // 🔒 Hanya user ini
-            ->orderBy('tanggal_registrasi', 'desc')
-            ->get();
-
-        // Query QR code yang disetujui & milik user saat ini
         $qrRegistrasi = RegistrasiKegiatan::with(['detailKegiatan.kegiatan'])
             ->where('status_konfirmasi', 'Disetujui')
             ->whereNotNull('kode_qr')
-            ->where('id_user', $userId) // 🔒 Filter user login
-            ->when($eventId, function ($query, $eventId) {
-                $query->whereHas('detailKegiatan.kegiatan', function ($q) use ($eventId) {
-                    $q->where('id_kegiatan', $eventId);
-                });
-            })
+            ->where('id_user', $userId)
+            ->when($eventId, fn($q) => $q->whereHas('detailKegiatan.kegiatan', fn($sq) => $sq->where('id_kegiatan', $eventId)))
             ->orderBy('tanggal_registrasi', 'desc')
+            ->get();
+
+        $pendingRegistrasi = RegistrasiKegiatan::with(['detailKegiatan.kegiatan'])
+            ->where('id_user', $userId)
+            ->where('status_konfirmasi', 'Pending')
             ->get();
 
         return view('peserta.eventQr', compact('qrRegistrasi', 'allEvents', 'pendingRegistrasi'));
@@ -183,49 +145,15 @@ class PesertaController extends Controller
 
     public function Sertifikat(Request $request)
     {
-        $user = session('user'); // Ambil data user dari session
-        if (!$user) {
-            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
-        }
+        $user = session('user');
+        if (!$user) return redirect()->route('login');
 
         $userId = $user['id'];
-
-        // Ambil semua kegiatan untuk filter (jika ingin pakai filter kegiatan)
         $allEvents = Kegiatan::all();
 
-        // Ambil semua sertifikat milik user
         $sertifikatSaya = Sertifikat::with('registrasi.detailKegiatan.kegiatan')
-            ->whereHas('registrasi', function ($query) use ($userId) {
-                $query->where('id_user', $userId);
-            })
-            ->when($request->filled('event') && $request->input('event') != 'all', function ($query) use ($request) {
-                $query->whereHas('registrasi.detailKegiatan', function ($subQuery) use ($request) {
-                    $subQuery->where('id_kegiatan', $request->input('event'));
-                });
-            })
-
-            ->get()
-            ->map(function ($serti) {
-                $detail = $serti->registrasi->detailKegiatan ?? null;
-                $kegiatan = $detail->kegiatan ?? null;
-
-                $waktu = '-';
-                if ($detail && $detail->waktu_mulai && $detail->waktu_selesai) {
-                    $waktu = Carbon::parse($detail->waktu_mulai)->format('H:i') . ' - ' .
-                        Carbon::parse($detail->waktu_selesai)->format('H:i');
-                }
-
-                return (object)[
-                    'id_sertifikat'   => $serti->id_sertifikat,
-                    'file'            => $serti->sertifikat,
-                    'kegiatan_nama'   => $kegiatan->nama_kegiatan ?? 'Nama Kegiatan Tidak Ditemukan',
-                    'tanggal'         => optional($detail)->tanggal
-                        ? Carbon::parse($detail->tanggal)->format('d M Y')
-                        : '-',
-                    'waktu'           => $waktu,
-                    'sesi'            => $detail->nama_sesi ?? '-',
-                ];
-            });
+            ->whereHas('registrasi', fn($q) => $q->where('id_user', $userId))
+            ->get();
 
         return view('peserta.eventSertifikat', compact('sertifikatSaya', 'allEvents'));
     }

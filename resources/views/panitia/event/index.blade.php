@@ -63,25 +63,239 @@
             </section>
 
             @if (session('success'))
-                <div id="success-alert" style="margin-top: -15; margin-bottom: 15px;"
-                    class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4 flex justify-between items-center gap-4"
-                    role="alert" style="width: 100%;">
+                <div id="success-alert" class="success-alert-modern" style="margin-top: -15px; margin-bottom: 15px;">
 
-                    <div class="flex items-start gap-2">
-                        <i class="fas fa-check-circle text-green-600 mt-1 text-lg"></i>
-                        <div>
-                            <strong class="font-semibold">Success!</strong>
-                            <span class="block">{{ session('success') }}</span>
+                    <!-- Icon Circle with Animation -->
+                    <div class="success-icon-wrapper">
+                        <div class="success-icon-circle">
+                            <i class="fas fa-check"></i>
                         </div>
                     </div>
 
-                    <button onclick="document.getElementById('success-alert').remove()"
-                        class="text-green-700 hover:text-green-900 focus:outline-none self-center">
-                        <i class="fas fa-times text-xl" style="margin-right: 20px"></i> <!-- ✅ ukuran ikon diperbesar -->
+                    <!-- Content -->
+                    <div class="success-content">
+                        <strong class="success-title">Berhasil!</strong>
+                        <span class="success-message">{{ session('success') }}</span>
+                    </div>
+
+                    <!-- Close Button -->
+                    <button onclick="closeSuccessAlert()" class="success-close-btn">
+                        <i class="fas fa-times"></i>
                     </button>
                 </div>
-            @endif
 
+                <style>
+                    .success-alert-modern {
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        border-radius: 16px;
+                        padding: 20px 24px;
+                        box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+                        display: flex;
+                        align-items: center;
+                        gap: 16px;
+                        position: relative;
+                        overflow: hidden;
+                        animation: slideInDown 0.5s ease-out;
+                        border: 2px solid rgba(255, 255, 255, 0.3);
+                    }
+
+                    /* Background Pattern */
+                    .success-alert-modern::before {
+                        content: '';
+                        position: absolute;
+                        top: -50%;
+                        right: -50%;
+                        width: 200%;
+                        height: 200%;
+                        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+                        animation: rotate 20s linear infinite;
+                    }
+
+                    /* Icon Wrapper with Animation */
+                    .success-icon-wrapper {
+                        position: relative;
+                        z-index: 1;
+                        flex-shrink: 0;
+                    }
+
+                    .success-icon-circle {
+                        width: 50px;
+                        height: 50px;
+                        background: rgba(255, 255, 255, 0.95);
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        animation: bounceIn 0.6s ease-out;
+                        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+                    }
+
+                    .success-icon-circle i {
+                        color: #667eea;
+                        font-size: 24px;
+                        animation: checkPop 0.4s ease-out 0.3s both;
+                    }
+
+                    /* Content Styling */
+                    .success-content {
+                        flex: 1;
+                        position: relative;
+                        z-index: 1;
+                        color: white;
+                    }
+
+                    .success-title {
+                        display: block;
+                        font-size: 18px;
+                        font-weight: 700;
+                        margin-bottom: 4px;
+                        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                    }
+
+                    .success-message {
+                        display: block;
+                        font-size: 14px;
+                        opacity: 0.95;
+                        line-height: 1.5;
+                    }
+
+                    /* Close Button */
+                    .success-close-btn {
+                        position: relative;
+                        z-index: 1;
+                        background: rgba(255, 255, 255, 0.2);
+                        border: none;
+                        width: 36px;
+                        height: 36px;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        flex-shrink: 0;
+                        backdrop-filter: blur(10px);
+                    }
+
+                    .success-close-btn:hover {
+                        background: rgba(255, 255, 255, 0.3);
+                        transform: rotate(90deg) scale(1.1);
+                    }
+
+                    .success-close-btn i {
+                        color: white;
+                        font-size: 18px;
+                    }
+
+                    /* Animations */
+                    @keyframes slideInDown {
+                        from {
+                            transform: translateY(-100px);
+                            opacity: 0;
+                        }
+
+                        to {
+                            transform: translateY(0);
+                            opacity: 1;
+                        }
+                    }
+
+                    @keyframes bounceIn {
+                        0% {
+                            transform: scale(0);
+                            opacity: 0;
+                        }
+
+                        50% {
+                            transform: scale(1.1);
+                        }
+
+                        100% {
+                            transform: scale(1);
+                            opacity: 1;
+                        }
+                    }
+
+                    @keyframes checkPop {
+                        0% {
+                            transform: scale(0);
+                        }
+
+                        50% {
+                            transform: scale(1.2);
+                        }
+
+                        100% {
+                            transform: scale(1);
+                        }
+                    }
+
+                    @keyframes rotate {
+                        from {
+                            transform: rotate(0deg);
+                        }
+
+                        to {
+                            transform: rotate(360deg);
+                        }
+                    }
+
+                    @keyframes slideOutUp {
+                        from {
+                            transform: translateY(0);
+                            opacity: 1;
+                        }
+
+                        to {
+                            transform: translateY(-100px);
+                            opacity: 0;
+                        }
+                    }
+
+                    /* Responsive */
+                    @media (max-width: 640px) {
+                        .success-alert-modern {
+                            padding: 16px 20px;
+                        }
+
+                        .success-icon-circle {
+                            width: 44px;
+                            height: 44px;
+                        }
+
+                        .success-icon-circle i {
+                            font-size: 20px;
+                        }
+
+                        .success-title {
+                            font-size: 16px;
+                        }
+
+                        .success-message {
+                            font-size: 13px;
+                        }
+                    }
+                </style>
+
+                <script>
+                    function closeSuccessAlert() {
+                        const alert = document.getElementById('success-alert');
+                        alert.style.animation = 'slideOutUp 0.4s ease-in forwards';
+                        setTimeout(() => {
+                            alert.remove();
+                        }, 400);
+                    }
+
+                    // Auto close after 5 seconds
+                    setTimeout(() => {
+                        const alert = document.getElementById('success-alert');
+                        if (alert) {
+                            closeSuccessAlert();
+                        }
+                    }, 5000);
+                </script>
+            @endif
+            
             <!-- Events List -->
             <section class="events-list">
                 <div class="container">
@@ -103,9 +317,12 @@
                                         <p><i class="fas fa-pencil-alt"></i> Status : {{ $event->status }}</p>
                                     </div>
                                     <div class="event-footer">
-                                        <a href="{{ route('panitia.event.createSesi', ['id_kegiatan' => $event->id_kegiatan]) }}" class="btn btn-sm btn-outline">Buat Sesi</a>
-                                        <a href="{{ route('event.detailEvent', ['id' => $event->id_kegiatan]) }}" class="btn btn-sm btn-outline">Details Event</a>
-                                        <a href="{{ route('panitia.event.edit', ['id_kegiatan' => $event->id_kegiatan]) }}" class="btn btn-sm btn-outline">Edit Event</a>
+                                        <a href="{{ route('panitia.event.createSesi', ['id_kegiatan' => $event->id_kegiatan]) }}"
+                                            class="btn btn-sm btn-outline">Buat Sesi</a>
+                                        <a href="{{ route('event.detailEvent', ['id' => $event->id_kegiatan]) }}"
+                                            class="btn btn-sm btn-outline">Details Event</a>
+                                        <a href="{{ route('panitia.event.edit', ['id_kegiatan' => $event->id_kegiatan]) }}"
+                                            class="btn btn-sm btn-outline">Edit Event</a>
                                     </div>
                                 </div>
                             </div>
