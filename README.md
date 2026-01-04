@@ -1,9 +1,9 @@
 # Aplikasi Manajemen Seminar Universitas Kristen Maranatha
 
 Anggota Kelompok:
-2372025 - Raymond Rafael Anthony
-2372040 - Kaisar Naufal Naratama
-2372051 - Muhammad Syehan Alwafa
+1. 2372025 - Raymond Rafael Anthony
+2. 2372040 - Kaisar Naufal Naratama
+3. 2372051 - Muhammad Syehan Alwafa
 
 ## Deskripsi Proyek
 
